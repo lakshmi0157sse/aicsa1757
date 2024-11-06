@@ -1,0 +1,44 @@
+from collections import deque
+
+def water_jug_problem(jug1_capacity, jug2_capacity, target):
+    # Initialize the queue with the starting state (0, 0)
+    queue = deque([(0, 0)])
+    # Set to keep track of visited states to avoid re-processing
+    visited = set((0, 0))
+
+    # BFS traversal
+    while queue:
+        jug1, jug2 = queue.popleft()
+
+        # If either jug contains the target amount, return success
+        if jug1 == target or jug2 == target:
+            return True
+
+        # Possible actions
+        actions = [
+            (jug1_capacity, jug2),  # Fill jug1
+            (jug1, jug2_capacity),  # Fill jug2
+            (0, jug2),              # Empty jug1
+            (jug1, 0),              # Empty jug2
+            (min(jug1 + jug2, jug1_capacity), jug2 - (min(jug1 + jug2, jug1_capacity) - jug1)),  # Pour jug2 to jug1
+            (jug1 - (min(jug1 + jug2, jug2_capacity) - jug2), min(jug1 + jug2, jug2_capacity))   # Pour jug1 to jug2
+        ]
+
+        # Process each action
+        for new_jug1, new_jug2 in actions:
+            if (new_jug1, new_jug2) not in visited:
+                visited.add((new_jug1, new_jug2))
+                queue.append((new_jug1, new_jug2))
+
+    # If no solution found, return False
+    return False
+
+# Example usage
+jug1_capacity = 3
+jug2_capacity = 5
+target = 4
+
+if water_jug_problem(jug1_capacity, jug2_capacity, target):
+    print(f"Yes, it's possible to measure {target} liters.")
+else:
+    print(f"No, it's not possible to measure {target} liters.")
