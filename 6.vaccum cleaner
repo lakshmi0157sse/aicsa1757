@@ -1,0 +1,68 @@
+import random
+
+class VacuumCleaner:
+    def __init__(self, grid_size=5):
+        self.grid_size = grid_size
+        self.grid = self.create_grid(grid_size)
+        self.position = (0, 0)
+        self.cleaned_rooms = 0
+
+    def create_grid(self, grid_size):
+        grid = [[random.choice([0, 1]) for _ in range(grid_size)] for _ in range(grid_size)]
+        return grid
+
+    def print_grid(self):
+        for row in self.grid:
+            print(" ".join(['D' if cell == 1 else 'C' for cell in row]))
+        print()
+
+    def move_left(self):
+        x, y = self.position
+        if y > 0:
+            self.position = (x, y - 1)
+
+    def move_right(self):
+        x, y = self.position
+        if y < self.grid_size - 1:
+            self.position = (x, y + 1)
+
+    def move_up(self):
+        x, y = self.position
+        if x > 0:
+            self.position = (x - 1, y)
+
+    def move_down(self):
+        x, y = self.position
+        if x < self.grid_size - 1:
+            self.position = (x + 1, y)
+
+    def clean(self):
+        x, y = self.position
+        if self.grid[x][y] == 1:
+            self.grid[x][y] = 0
+            self.cleaned_rooms += 1
+
+    def run(self):
+        steps = 0
+        while self.cleaned_rooms < self.grid_size ** 2:
+            steps += 1
+            print(f"Step {steps}: Current position: {self.position}")
+            self.print_grid()
+
+            x, y = self.position
+            self.clean()
+
+            move_choice = random.choice([self.move_left, self.move_right, self.move_up, self.move_down])
+            move_choice()
+
+            if self.position == (x, y):
+                print("The vacuum cleaner is stuck! Exiting.")
+                break
+
+        print(f"Total steps: {steps}")
+        print(f"Total rooms cleaned: {self.cleaned_rooms}")
+        self.print_grid()
+
+
+vacuum = VacuumCleaner(grid_size=5)
+vacuum.run()
